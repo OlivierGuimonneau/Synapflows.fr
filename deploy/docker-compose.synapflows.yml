@@ -1,0 +1,29 @@
+services:
+  synapflows_www:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: synapflows-www
+    restart: unless-stopped
+    env_file:
+      - ../.env
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      APP_DOMAIN: www.synapflows.fr
+    expose:
+      - "5000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=${TRAEFIK_NETWORK:-n8n-https_default}"
+      - "traefik.http.routers.synapflows-www.rule=Host(`www.synapflows.fr`)"
+      - "traefik.http.routers.synapflows-www.entrypoints=websecure"
+      - "traefik.http.routers.synapflows-www.tls=true"
+      - "traefik.http.routers.synapflows-www.tls.certresolver=${TRAEFIK_CERTRESOLVER:-letsencrypt}"
+      - "traefik.http.services.synapflows-www.loadbalancer.server.port=5000"
+    networks:
+      - traefik_shared
+networks:
+  traefik_shared:
+    external: true
+    name: ${TRAEFIK_NETWORK:-n8n-https_default}

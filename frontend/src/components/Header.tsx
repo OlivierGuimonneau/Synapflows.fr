@@ -1,0 +1,1 @@
+export function Header(){return <header className="header"><div className="header-inner" style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}><strong style={{fontSize:'1.5rem'}}>SynapFlows</strong><button className="button" type="button">☀️/🌙</button></div></header>}
