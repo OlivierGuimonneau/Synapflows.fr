@@ -25,42 +25,71 @@ jobs:
           RECAPTCHA_SITE_KEY: ${{ secrets.RECAPTCHA_SITE_KEY }}
           RECAPTCHA_ENTERPRISE_API_KEY: ${{ secrets.RECAPTCHA_ENTERPRISE_API_KEY }}
         run: |
+          # Setup SSH with proper key formatting
           mkdir -p ~/.ssh
-          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          
+          # Write SSH key with proper handling of newlines
+          cat > ~/.ssh/deploy_key << 'SSH_KEY_EOF'
+          ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KEY_EOF
+          
           chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -H $VPS_HOST >> ~/.ssh/known_hosts 2>/dev/null || true
           
-          echo "Testing SSH connection..."
-          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no -o ConnectTimeout=10 $VPS_USER@$VPS_HOST "whoami && pwd"
+          # Add VPS to known hosts
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
           
-          echo "Deploying..."
-          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST '/bin/bash -s' << 'BASHSCRIPT'
+          # Test SSH connection first
+          echo "🔐 Testing SSH connection..."
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "echo '✓ SSH connection successful'" || exit 1
+          
+          # Deploy script
+          echo "🚀 Starting deployment..."
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} bash -s << 'DEPLOY_SCRIPT'
           set -e
-          cd $VPS_PATH
+          
+          cd "$1"
+          
+          echo "📥 Pulling latest code..."
           git fetch origin main
           git clean -fd
           git reset --hard origin/main
           git pull origin main
-          cat > .env << 'ENVEOF'
+          
+          echo "🔧 Creating .env file with secrets..."
+          cat > .env << 'EOF'
           PORT=5000
           NODE_ENV=production
-          AIRTABLE_BASE_ID=$AIRTABLE_BASE_ID
-          AIRTABLE_PROJETS_SOUMIS=$AIRTABLE_PROJETS_SOUMIS
-          AIRTABLE_TOKEN=$AIRTABLE_TOKEN
-          VITE_RECAPTCHA_SITE_KEY=$RECAPTCHA_SITE_KEY
+          AIRTABLE_BASE_ID=$2
+          AIRTABLE_PROJETS_SOUMIS=$3
+          AIRTABLE_TOKEN=$4
+          VITE_RECAPTCHA_SITE_KEY=$5
           VITE_RECAPTCHA_ACTION=submit_lead
-          RECAPTCHA_SITE_KEY=$RECAPTCHA_SITE_KEY
-          RECAPTCHA_ENTERPRISE_API_KEY=$RECAPTCHA_ENTERPRISE_API_KEY
+          RECAPTCHA_SITE_KEY=$5
+          RECAPTCHA_ENTERPRISE_API_KEY=$6
           RECAPTCHA_ENTERPRISE_PROJECT_ID=synapflows
           RECAPTCHA_EXPECTED_ACTION=submit_lead
           RECAPTCHA_MIN_SCORE=0.5
-          ENVEOF
+          EOF
+          
+          echo "🏗️  Building Docker image..."
           docker compose build --no-cache
-          docker compose up -d --force-recreate
+          
+          echo "⏹️  Stopping old container..."
+          docker compose down || true
+          
+          echo "▶️  Starting new container..."
+          docker compose up -d
+          
+          echo "✅ Waiting for service to be ready..."
+          sleep 5
+          
+          echo "🔍 Checking container status..."
           docker compose ps
-          docker compose logs synapflows-www --tail 10
-          BASHSCRIPT
-          echo "Deployment complete!"
+          
+          echo "📋 Recent logs..."
+          docker compose logs synapflows-www --tail 15
+          DEPLOY_SCRIPT ${{ secrets.VPS_PATH }} ${{ secrets.AIRTABLE_BASE_ID }} ${{ secrets.AIRTABLE_PROJETS_SOUMIS }} ${{ secrets.AIRTABLE_TOKEN }} ${{ secrets.RECAPTCHA_SITE_KEY }} ${{ secrets.RECAPTCHA_ENTERPRISE_API_KEY }}
+
 
       - name: Deployment Status
         if: success()
