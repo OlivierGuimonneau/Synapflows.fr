@@ -28,12 +28,16 @@ jobs:
           # Setup SSH with proper key formatting
           mkdir -p ~/.ssh
           
-          # Write SSH key with proper handling of newlines
-          cat > ~/.ssh/deploy_key << 'SSH_KEY_EOF'
-          ${{ secrets.SSH_PRIVATE_KEY }}
-          SSH_KEY_EOF
+          echo "🔐 DEBUG: SSH key content (first/last lines):"
+          echo "$SSH_PRIVATE_KEY" | head -1
+          echo "$SSH_PRIVATE_KEY" | tail -1
+          
+          # Write SSH key properly (no indentation)
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
           
           chmod 600 ~/.ssh/deploy_key
+          
+          echo "🔐 DEBUG: Key file size: $(wc -c < ~/.ssh/deploy_key) bytes"
           
           # Add VPS to known hosts
           ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
@@ -47,6 +51,8 @@ jobs:
           ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} bash -s << 'DEPLOY_SCRIPT'
           set -e
           
+          echo "DEBUG: Arguments received: $1 $2 $3 $4 $5 $6"
+          
           cd "$1"
           
           echo "📥 Pulling latest code..."
@@ -56,20 +62,23 @@ jobs:
           git pull origin main
           
           echo "🔧 Creating .env file with secrets..."
-          cat > .env << 'EOF'
-          PORT=5000
-          NODE_ENV=production
-          AIRTABLE_BASE_ID=$2
-          AIRTABLE_PROJETS_SOUMIS=$3
-          AIRTABLE_TOKEN=$4
-          VITE_RECAPTCHA_SITE_KEY=$5
-          VITE_RECAPTCHA_ACTION=submit_lead
-          RECAPTCHA_SITE_KEY=$5
-          RECAPTCHA_ENTERPRISE_API_KEY=$6
-          RECAPTCHA_ENTERPRISE_PROJECT_ID=synapflows
-          RECAPTCHA_EXPECTED_ACTION=submit_lead
-          RECAPTCHA_MIN_SCORE=0.5
-          EOF
+          cat > .env << EOF
+PORT=5000
+NODE_ENV=production
+AIRTABLE_BASE_ID=$2
+AIRTABLE_PROJETS_SOUMIS=$3
+AIRTABLE_TOKEN=$4
+VITE_RECAPTCHA_SITE_KEY=$5
+VITE_RECAPTCHA_ACTION=submit_lead
+RECAPTCHA_SITE_KEY=$5
+RECAPTCHA_ENTERPRISE_API_KEY=$6
+RECAPTCHA_ENTERPRISE_PROJECT_ID=synapflows
+RECAPTCHA_EXPECTED_ACTION=submit_lead
+RECAPTCHA_MIN_SCORE=0.5
+EOF
+          
+          echo "DEBUG: .env created, first 3 lines:"
+          head -3 .env
           
           echo "🏗️  Building Docker image..."
           docker compose build --no-cache
