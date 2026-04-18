@@ -63,19 +63,19 @@ jobs:
           
           echo "🔧 Creating .env file with secrets..."
           cat > .env << EOF
-PORT=5000
-NODE_ENV=production
-AIRTABLE_BASE_ID=$2
-AIRTABLE_PROJETS_SOUMIS=$3
-AIRTABLE_TOKEN=$4
-VITE_RECAPTCHA_SITE_KEY=$5
-VITE_RECAPTCHA_ACTION=submit_lead
-RECAPTCHA_SITE_KEY=$5
-RECAPTCHA_ENTERPRISE_API_KEY=$6
-RECAPTCHA_ENTERPRISE_PROJECT_ID=synapflows
-RECAPTCHA_EXPECTED_ACTION=submit_lead
-RECAPTCHA_MIN_SCORE=0.5
-EOF
+            PORT=5000
+            NODE_ENV=production
+            AIRTABLE_BASE_ID=$2
+            AIRTABLE_PROJETS_SOUMIS=$3
+            AIRTABLE_TOKEN=$4
+            VITE_RECAPTCHA_SITE_KEY=$5
+            VITE_RECAPTCHA_ACTION=submit_lead
+            RECAPTCHA_SITE_KEY=$5
+            RECAPTCHA_ENTERPRISE_API_KEY=$6
+            RECAPTCHA_ENTERPRISE_PROJECT_ID=synapflows
+            RECAPTCHA_EXPECTED_ACTION=submit_lead
+            RECAPTCHA_MIN_SCORE=0.5
+            EOF
           
           echo "DEBUG: .env created, first 3 lines:"
           head -3 .env
