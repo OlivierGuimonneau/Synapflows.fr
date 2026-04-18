@@ -2,60 +2,93 @@ name: Deploy SynapFlows
 
 on:
   push:
-    branches: [main]
-  workflow_dispatch:
+    branches:
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: VPS_PATH,AIRTABLE_BASE_ID,AIRTABLE_PROJETS_SOUMIS,AIRTABLE_TOKEN,RECAPTCHA_SITE_KEY,RECAPTCHA_ENTERPRISE_API_KEY
-          script_stop: true
-          script: |
-            set -e
-            
-            cd "$VPS_PATH" || { echo "Dossier non trouvé"; exit 1; }
-            
-            echo "Nettoyage des fichiers locaux..."
-            git fetch origin main
-            git clean -fd
-            git reset --hard origin/main
-            
-            echo "Pull depuis GitHub..."
-            git pull origin main
-            
-            echo "Création du fichier .env..."
-            cat > .env << EOF
-PORT=5000
-NODE_ENV=production
-AIRTABLE_BASE_ID=$AIRTABLE_BASE_ID
-AIRTABLE_PROJETS_SOUMIS=$AIRTABLE_PROJETS_SOUMIS
-AIRTABLE_TOKEN=$AIRTABLE_TOKEN
-VITE_RECAPTCHA_SITE_KEY=$RECAPTCHA_SITE_KEY
-VITE_RECAPTCHA_ACTION=submit_lead
-RECAPTCHA_SITE_KEY=$RECAPTCHA_SITE_KEY
-RECAPTCHA_ENTERPRISE_API_KEY=$RECAPTCHA_ENTERPRISE_API_KEY
-RECAPTCHA_ENTERPRISE_PROJECT_ID=synapflows
-RECAPTCHA_EXPECTED_ACTION=submit_lead
-RECAPTCHA_MIN_SCORE=0.5
-EOF
-            
-            echo "Build Docker image..."
-            docker compose build --no-cache
-            
-            echo "Redémarrage du service..."
-            docker compose up -d --force-recreate
-            
-            echo "Statut des conteneurs..."
-            docker compose ps
-            
-            echo "Logs récents..."
-            docker compose logs synapflows-www --tail 10
+      - name: Deploy to VPS
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_PATH: ${{ secrets.VPS_PATH }}
+          AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID }}
+          AIRTABLE_PROJETS_SOUMIS: ${{ secrets.AIRTABLE_PROJETS_SOUMIS }}
+          AIRTABLE_TOKEN: ${{ secrets.AIRTABLE_TOKEN }}
+          RECAPTCHA_SITE_KEY: ${{ secrets.RECAPTCHA_SITE_KEY }}
+          RECAPTCHA_ENTERPRISE_API_KEY: ${{ secrets.RECAPTCHA_ENTERPRISE_API_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          
+          cat > ~/.ssh/deploy_key << 'SSH_KEY_EOF'
+          ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KEY_EOF
+          
+          chmod 600 ~/.ssh/deploy_key
+          
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
+          
+          echo "🔐 Testing SSH connection..."
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "echo '✓ SSH connection successful'" || exit 1
+          
+          echo "🚀 Starting deployment..."
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'DEPLOY_SCRIPT'
+          set -e
+          
+          cd $VPS_PATH
+          
+          echo "📥 Pulling latest code..."
+          git fetch origin main
+          git clean -fd
+          git reset --hard origin/main
+          git pull origin main
+          
+          echo "🔧 Creating .env file..."
+          cat > .env << 'EOF'
+          PORT=5000
+          NODE_ENV=production
+          AIRTABLE_BASE_ID=$AIRTABLE_BASE_ID
+          AIRTABLE_PROJETS_SOUMIS=$AIRTABLE_PROJETS_SOUMIS
+          AIRTABLE_TOKEN=$AIRTABLE_TOKEN
+          VITE_RECAPTCHA_SITE_KEY=$RECAPTCHA_SITE_KEY
+          VITE_RECAPTCHA_ACTION=submit_lead
+          RECAPTCHA_SITE_KEY=$RECAPTCHA_SITE_KEY
+          RECAPTCHA_ENTERPRISE_API_KEY=$RECAPTCHA_ENTERPRISE_API_KEY
+          RECAPTCHA_ENTERPRISE_PROJECT_ID=synapflows
+          RECAPTCHA_EXPECTED_ACTION=submit_lead
+          RECAPTCHA_MIN_SCORE=0.5
+          EOF
+          
+          echo "🏗️  Building Docker image..."
+          docker compose build --no-cache
+          
+          echo "▶️  Starting service..."
+          docker compose up -d --force-recreate
+          
+          echo "✅ Service deployed!"
+          echo "🔍 Checking container status..."
+          docker compose ps
+          
+          echo "📋 Recent logs..."
+          docker compose logs synapflows-www --tail 10
+          
+          DEPLOY_SCRIPT
+
+      - name: Deployment Status
+        if: success()
+        run: |
+          echo "✅ Deployment completed successfully!"
+          echo "🌐 Check https://www.synapflows.fr"
+
+      - name: Deployment Failed
+        if: failure()
+        run: |
+          echo "❌ Deployment failed!"
+          echo "Check GitHub Actions logs for details"
