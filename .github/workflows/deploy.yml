@@ -26,22 +26,21 @@ jobs:
           RECAPTCHA_ENTERPRISE_API_KEY: ${{ secrets.RECAPTCHA_ENTERPRISE_API_KEY }}
         run: |
           mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H $VPS_HOST >> ~/.ssh/known_hosts 2>/dev/null || true
           
-          echo "🔐 Testing SSH connection..."
-          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST "echo '✓ SSH connection successful'"
+          echo "Testing SSH connection..."
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no -o ConnectTimeout=10 $VPS_USER@$VPS_HOST "whoami && pwd"
           
-          echo "🚀 Starting deployment..."
-          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST "
+          echo "Deploying..."
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST '/bin/bash -s' << 'BASHSCRIPT'
           set -e
           cd $VPS_PATH
           git fetch origin main
           git clean -fd
           git reset --hard origin/main
           git pull origin main
-          
           cat > .env << 'ENVEOF'
           PORT=5000
           NODE_ENV=production
@@ -56,12 +55,12 @@ jobs:
           RECAPTCHA_EXPECTED_ACTION=submit_lead
           RECAPTCHA_MIN_SCORE=0.5
           ENVEOF
-          
           docker compose build --no-cache
           docker compose up -d --force-recreate
           docker compose ps
           docker compose logs synapflows-www --tail 10
-          "
+          BASHSCRIPT
+          echo "Deployment complete!"
 
       - name: Deployment Status
         if: success()
