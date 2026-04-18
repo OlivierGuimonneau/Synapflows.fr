@@ -1,0 +1,48 @@
+services:
+  synapflows:
+    build: .
+    container_name: synapflows-www
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      PORT: "5000"
+      RECAPTCHA_BYPASS: "true"
+    networks:
+      - n8n-https_default
+    labels:
+      - "traefik.enable=true"
+      # Attention aux BACKTICKS (`) ici :
+      - "traefik.http.routers.synapflows.rule=Host(`www.synapflows.fr`)"
+      - "traefik.http.routers.synapflows.entrypoints=websecure"
+      - "traefik.http.routers.synapflows.tls.certresolver=myresolver"
+      # 🔒 TLS Hardening - Suites de chiffrement modernes et sécurisées
+      - "traefik.http.routers.synapflows.tls=true"
+      # Forcer Traefik à utiliser ce réseau pour communiquer avec le conteneur
+      - "traefik.docker.network=n8n-https_default"
+      - "traefik.http.services.synapflows.loadbalancer.server.port=5000"
+      # 🔒 Middleware de sécurité - redéclarer les en-têtes (mode Report-Only)
+      - "traefik.http.middlewares.synapflows-security.headers.customResponseHeaders.Content-Security-Policy-Report-Only=default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/ https://recaptcha.net/ https://cdn.jsdelivr.net/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com/; img-src 'self' data: https:; font-src 'self' https: https://fonts.gstatic.com/; connect-src 'self' https://api.airtable.com https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/ https://recaptcha.net/ https://www.google.com/recaptcha/api/ https://www.gstatic.com/ https://fonts.googleapis.com/ https://fonts.gstatic.com/; frame-src https://www.google.com/recaptcha/ https://recaptcha.net/; frame-ancestors 'none'; report-uri /api/csp-report;"
+      - "traefik.http.middlewares.synapflows-security.headers.customResponseHeaders.Strict-Transport-Security=max-age=31536000; includeSubDomains; preload"
+      - "traefik.http.middlewares.synapflows-security.headers.customResponseHeaders.X-Frame-Options=DENY"
+      - "traefik.http.middlewares.synapflows-security.headers.customResponseHeaders.X-Content-Type-Options=nosniff"
+      - "traefik.http.middlewares.synapflows-security.headers.customResponseHeaders.Referrer-Policy=strict-origin-when-cross-origin"
+      - "traefik.http.middlewares.synapflows-security.headers.customResponseHeaders.Permissions-Policy=camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+      # 🔒 Sécurité TLS supplémentaire - Enforcement certificats
+      - "traefik.http.middlewares.synapflows-security.headers.customResponseHeaders.Expect-CT=max-age=86400, enforce"
+      # 🔐 HTTP to HTTPS Redirect (sécuriser les connexions non-chiffrées)
+      - "traefik.http.routers.synapflows-http.rule=Host(`www.synapflows.fr`)"
+      - "traefik.http.routers.synapflows-http.entrypoints=web"
+      - "traefik.http.routers.synapflows-http.middlewares=synapflows-https-redirect"
+      - "traefik.http.middlewares.synapflows-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.synapflows-https-redirect.redirectscheme.permanent=true"
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:5000 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  n8n-https_default:
+    external: true
