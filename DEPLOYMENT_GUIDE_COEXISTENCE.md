@@ -24,8 +24,8 @@
 ```bash
 ssh user@your-vps
 
-# Naviguer vers le répertoire du projet www
-cd /path/to/www.synapflows.fr
+# Naviguer vers le répertoire du projet www (à la racine de root)
+cd /root/www.synapflows.fr
 
 # Créer le fichier .env avec les secrets production
 cat > .env << 'EOF'
@@ -66,9 +66,9 @@ cat .env
 ### **Étape 1 : Clone et préparation**
 
 ```bash
-# Sur le VPS, créer un répertoire séparé pour www
-mkdir -p /opt/www.synapflows.fr
-cd /opt/www.synapflows.fr
+# Sur le VPS (dans le répertoire root), créer un répertoire séparé pour www
+mkdir -p /root/www.synapflows.fr
+cd /root/www.synapflows.fr
 
 # Clone le repo (ou git pull si déjà existant)
 git clone https://github.com/your-org/www.synapflows.fr.git .
@@ -94,7 +94,7 @@ docker ps | grep synapflows
 ### **Étape 3 : Build l'image Docker pour www.synapflows.fr**
 
 ```bash
-cd /opt/www.synapflows.fr
+cd /root/www.synapflows.fr
 
 # Construire l'image (peut prendre 2-3 minutes)
 docker-compose build
@@ -108,7 +108,7 @@ docker images | grep synapflows
 ### **Étape 4 : Lancer www.synapflows.fr en parallèle**
 
 ```bash
-cd /opt/www.synapflows.fr
+cd /root/www.synapflows.fr
 
 # Lancer le container
 docker-compose up -d
@@ -217,7 +217,7 @@ docker logs synapflows-www
 ### **Arrêter temporairement www.synapflows.fr (garder project)**
 
 ```bash
-cd /opt/www.synapflows.fr
+cd /root/www.synapflows.fr
 docker-compose down
 
 # project.synapflows.fr continue à tourner
@@ -226,14 +226,14 @@ docker-compose down
 ### **Redémarrer www.synapflows.fr**
 
 ```bash
-cd /opt/www.synapflows.fr
+cd /root/www.synapflows.fr
 docker-compose up -d
 ```
 
 ### **Mettre à jour www.synapflows.fr (sans arrêter project)**
 
 ```bash
-cd /opt/www.synapflows.fr
+cd /root/www.synapflows.fr
 
 # Récupérer les changements
 git pull origin main
