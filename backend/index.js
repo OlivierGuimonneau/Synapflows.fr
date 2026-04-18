@@ -19,7 +19,7 @@ app.set('trust proxy', 1);
 // Log configuration au démarrage
 console.log('\n========== Configuration Airtable ==========');
 console.log('BASE_ID:', process.env.AIRTABLE_BASE_ID);
-console.log('TABLE:', process.env.AIRTABLE_TABLE);
+console.log('TABLE (Projets Soumis):', process.env.AIRTABLE_PROJETS_SOUMIS);
 console.log('TOKEN exists:', !!process.env.AIRTABLE_TOKEN);
 console.log('TOKEN length:', process.env.AIRTABLE_TOKEN?.length);
 console.log('NODE_ENV:', process.env.NODE_ENV);
@@ -85,7 +85,7 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.get('/api/config-test', (req, res) => {
   res.json({
     baseId: process.env.AIRTABLE_BASE_ID,
-    table: process.env.AIRTABLE_TABLE,
+    table: process.env.AIRTABLE_PROJETS_SOUMIS,
     hasToken: !!process.env.AIRTABLE_TOKEN,
     tokenLength: process.env.AIRTABLE_TOKEN?.length,
     nodeEnv: process.env.NODE_ENV,

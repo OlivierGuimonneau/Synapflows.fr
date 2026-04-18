@@ -33,6 +33,25 @@ jobs:
           git clean -fd
           git reset --hard origin/main
           
+          echo "Créer le fichier .env avec les secrets..."
+          cat > .env << 'ENVEOF'
+# Production configuration
+PORT=5000
+NODE_ENV=production
+AIRTABLE_BASE_ID=${{ secrets.AIRTABLE_BASE_ID }}
+AIRTABLE_PROJETS_SOUMIS=${{ secrets.AIRTABLE_PROJETS_SOUMIS }}
+AIRTABLE_TOKEN=${{ secrets.AIRTABLE_TOKEN }}
+VITE_RECAPTCHA_SITE_KEY=${{ secrets.RECAPTCHA_SITE_KEY }}
+VITE_RECAPTCHA_ACTION=submit_lead
+RECAPTCHA_SITE_KEY=${{ secrets.RECAPTCHA_SITE_KEY }}
+RECAPTCHA_ENTERPRISE_API_KEY=${{ secrets.RECAPTCHA_ENTERPRISE_API_KEY }}
+RECAPTCHA_ENTERPRISE_PROJECT_ID=synapflows
+RECAPTCHA_EXPECTED_ACTION=submit_lead
+RECAPTCHA_MIN_SCORE=0.5
+ENVEOF
+          
+          echo ".env créé avec succès"
+          
           echo "Pull depuis GitHub..."
           git pull origin main
           

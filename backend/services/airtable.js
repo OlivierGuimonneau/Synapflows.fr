@@ -40,7 +40,7 @@ function mapToAirtableFields(payload) {
 export async function submitToAirtable(payload) {
   // Lire les variables d'environnement AU MOMENT de l'appel (pas au chargement du module)
   const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
-  const AIRTABLE_TABLE = process.env.AIRTABLE_TABLE;
+  const AIRTABLE_PROJETS_SOUMIS = process.env.AIRTABLE_PROJETS_SOUMIS;
   const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN;
 
   return new Promise((resolve, reject) => {
@@ -49,14 +49,14 @@ export async function submitToAirtable(payload) {
 
     console.log('[SUBMIT] Configuration Airtable:');
     console.log('  BASE_ID:', AIRTABLE_BASE_ID);
-    console.log('  TABLE:', AIRTABLE_TABLE);
+    console.log('  TABLE (Projets Soumis):', AIRTABLE_PROJETS_SOUMIS);
     console.log('  TOKEN exists:', !!AIRTABLE_TOKEN);
     console.log('  TOKEN length:', AIRTABLE_TOKEN?.length);
     
     console.log('[SUBMIT] Champs mappés pour Airtable:', JSON.stringify(mappedFields, null, 2));
 
     const postData = JSON.stringify({ records: [{ fields: mappedFields }] });
-    const encodedTable = encodeURIComponent(AIRTABLE_TABLE);
+    const encodedTable = encodeURIComponent(AIRTABLE_PROJETS_SOUMIS);
     const path = `/v0/${AIRTABLE_BASE_ID}/${encodedTable}`;
     
     console.log('[SUBMIT] URL path:', path);

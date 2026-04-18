@@ -40,7 +40,7 @@ NODE_ENV=production
 
 # 📊 AIRTABLE API INTEGRATION
 AIRTABLE_BASE_ID=appvGEsLWrImfUU9i
-AIRTABLE_TABLE=Projets Soumis
+AIRTABLE_PROJETS_SOUMIS=Projets Soumis
 AIRTABLE_TOKEN=pattGx0JN5bMKqsHi.24d65c136220f9892f71a0d109a3602a7c8d41c69208483c60831d961c0e2bbb
 
 # 🤖 GOOGLE RECAPTCHA V3 PROTECTION
@@ -66,17 +66,17 @@ cat .env
 ### **Étape 1 : Clone et préparation**
 
 ```bash
-# Sur le VPS (dans le répertoire root), créer un répertoire séparé pour www
-mkdir -p /root/www.synapflows.fr
+# Sur le VPS (dans le répertoire root), cloner directement
+cd /root
+git clone https://github.com/OlivierGuimonneau/Synapflows.fr.git www.synapflows.fr
 cd /root/www.synapflows.fr
 
-# Clone le repo (ou git pull si déjà existant)
-git clone https://github.com/your-org/www.synapflows.fr.git .
-# OU si déjà cloné :
+# OU si déjà cloné, mettre à jour :
+cd /root/www.synapflows.fr
 git pull origin main
 
 # Créer le fichier .env (voir section précédente)
-# ... (copier/coller le cat > .env ci-dessus)
+# ... (copier/coller le cat > .env ci-dessous)
 ```
 
 ### **Étape 2 : Vérifier que project.synapflows.fr tourne**
@@ -97,7 +97,7 @@ docker ps | grep synapflows
 cd /root/www.synapflows.fr
 
 # Construire l'image (peut prendre 2-3 minutes)
-docker-compose build
+docker compose build
 
 # Vérifier le build
 docker images | grep synapflows
@@ -111,7 +111,7 @@ docker images | grep synapflows
 cd /root/www.synapflows.fr
 
 # Lancer le container
-docker-compose up -d
+docker compose up -d
 
 # Vérifier que les deux tournent
 docker ps | grep synapflows
@@ -218,7 +218,7 @@ docker logs synapflows-www
 
 ```bash
 cd /root/www.synapflows.fr
-docker-compose down
+docker compose down
 
 # project.synapflows.fr continue à tourner
 ```
@@ -227,7 +227,7 @@ docker-compose down
 
 ```bash
 cd /root/www.synapflows.fr
-docker-compose up -d
+docker compose up -d
 ```
 
 ### **Mettre à jour www.synapflows.fr (sans arrêter project)**
@@ -239,10 +239,10 @@ cd /root/www.synapflows.fr
 git pull origin main
 
 # Rebuild
-docker-compose build
+docker compose build
 
 # Restart
-docker-compose up -d
+docker compose up -d
 ```
 
 ---
