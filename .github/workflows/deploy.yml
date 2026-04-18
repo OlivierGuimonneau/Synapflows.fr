@@ -29,7 +29,7 @@ jobs:
           mkdir -p ~/.ssh
           
           # Write SSH key using base64 to preserve exact formatting
-          echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/deploy_key
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           
           # Add VPS to known hosts
