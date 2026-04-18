@@ -19,7 +19,7 @@ Formulaire de qualification de projet moderne basé sur une architecture **React
 ---
 
 ## 📁 Structure du projet
-
+ 
 ```
 SynapFlows-ProjectSubmission/
 │
