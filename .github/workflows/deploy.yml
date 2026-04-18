@@ -28,16 +28,9 @@ jobs:
           # Setup SSH with proper key formatting
           mkdir -p ~/.ssh
           
-          echo "🔐 DEBUG: SSH key content (first/last lines):"
-          echo "$SSH_PRIVATE_KEY" | head -1
-          echo "$SSH_PRIVATE_KEY" | tail -1
-          
-          # Write SSH key properly (no indentation)
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
-          
+          # Write SSH key using base64 to preserve exact formatting
+          echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          
-          echo "🔐 DEBUG: Key file size: $(wc -c < ~/.ssh/deploy_key) bytes"
           
           # Add VPS to known hosts
           ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
