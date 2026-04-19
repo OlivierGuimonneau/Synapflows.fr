@@ -2,8 +2,10 @@ import React from 'react';
 
 export default function Footer() {
   return (
-    <footer className="footer">
-      © 2026 SynapFlows
+    <footer className="site-footer">
+      <div className="container">
+        <p>&copy; 2026 SynapFlows. Tous droits réservés.</p>
+      </div>
     </footer>
   );
 }

@@ -2,50 +2,52 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 export default function Header() {
-  const [theme, setTheme] = useState('light');
   const location = useLocation();
-
-  const toggleTheme = () => {
-    const newTheme = theme === 'dark' ? 'light' : 'dark';
-    setTheme(newTheme);
-    document.documentElement.setAttribute('data-theme', newTheme);
-  };
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const isActive = (path) => location.pathname === path;
 
+  const handleMenuToggle = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleMenuClose = () => {
+    setIsMenuOpen(false);
+  };
+
   return (
     <header className="site-header">
-      <Link to="/" className="brand">
+      <Link to="/" className="brand" onClick={handleMenuClose}>
         <img src="/assets/images/logo-synapflows.png" alt="Logo SynapFlows" />
-        <div className="brand-name">SynapFlows</div>
       </Link>
 
-      <nav className="site-nav">
+      <button
+        className="hamburger"
+        onClick={handleMenuToggle}
+        aria-label="Toggle menu"
+        aria-expanded={isMenuOpen}
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav className={`site-nav ${isMenuOpen ? 'open' : ''}`}>
         <Link
           to="/"
           className={`nav-link ${isActive('/') ? 'active' : ''}`}
+          onClick={handleMenuClose}
         >
           Accueil
         </Link>
         <Link
           to="/formulaire-qualification"
           className={`nav-link ${isActive('/formulaire-qualification') ? 'active' : ''}`}
+          onClick={handleMenuClose}
         >
           Qualifier mon projet
         </Link>
       </nav>
-
-      <button className="theme-toggle" onClick={toggleTheme} aria-label="Changer de thème">
-        {theme === 'dark' ? (
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-          </svg>
-        ) : (
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-          </svg>
-        )}
-      </button>
     </header>
   );
 }

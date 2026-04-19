@@ -1,15 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Progress from '../components/Progress';
 import Form from '../components/Form';
 import SuccessScreen from '../components/SuccessScreen';
 
-export default function FormPage() {
+export default function FormPage({ onSubmitted }) {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const TOTAL_STEPS = 6;
+
+  useEffect(() => {
+    if (submitted && onSubmitted) {
+      onSubmitted();
+    }
+  }, [submitted, onSubmitted]);
 
   const handleStepChange = (step) => {
     setCurrentStep(step);

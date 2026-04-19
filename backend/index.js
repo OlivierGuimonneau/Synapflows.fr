@@ -123,12 +123,10 @@ try {
 // Servir les fichiers statiques (en dev et prod)
 app.use(express.static(path.join(__dirname, '../public')));
 
-// En production, serve index.html pour SPA fallback
-if (!isDev) {
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../public/index.html'));
-  });
-}
+// SPA fallback: redirige toutes les routes non-API vers index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/index.html'));
+});
 
 // Error handling
 app.use((err, req, res, next) => {

@@ -45,13 +45,14 @@ export default function HomePage() {
             <Link to="/formulaire-qualification" className="btn btn-primary">
               Commencer une qualification de projet
             </Link>
-            <button className="btn btn-secondary">📅 Calendrier de démo</button>
           </div>
         </div>
         <div className="hero-image">
-          <div className="placeholder-image">
-            <span>Votre image/animation ici</span>
-          </div>
+          <img 
+            src="/assets/images/VidéoSynapFlows.gif" 
+            alt="SynapFlows Animation" 
+            className="hero-animation"
+          />
         </div>
       </section>
 
@@ -102,7 +103,6 @@ export default function HomePage() {
           <h2>Parlons de votre projet</h2>
           <p>Explorez comment SynapFlows peut transformer votre activité</p>
           <div className="cta-buttons">
-            <button className="btn btn-primary btn-large">📅 Réserver une démo gratuite</button>
             <Link to="/formulaire-qualification" className="btn btn-outline btn-large">
               Qualifier mon projet
             </Link>
