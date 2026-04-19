@@ -41,10 +41,8 @@ jobs:
           
           # Deploy script
           echo "🚀 Starting deployment..."
-          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} bash -s ${{ secrets.VPS_PATH }} ${{ secrets.AIRTABLE_BASE_ID }} ${{ secrets.AIRTABLE_PROJETS_SOUMIS }} ${{ secrets.AIRTABLE_TOKEN }} ${{ secrets.RECAPTCHA_SITE_KEY }} ${{ secrets.RECAPTCHA_ENTERPRISE_API_KEY }} << 'DEPLOY_SCRIPT'
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} bash -s ${{ secrets.VPS_PATH }} << 'DEPLOY_SCRIPT'
           set -e
-          
-          echo "DEBUG: Arguments received: $1 $2 $3 $4 $5 $6"
           
           cd "$1"
           
@@ -53,25 +51,6 @@ jobs:
           git clean -fd
           git reset --hard origin/main
           git pull origin main
-          
-          echo "🔧 Creating .env file with secrets..."
-          cat > .env << ENVFILE
-            PORT=5000
-            NODE_ENV=production
-            AIRTABLE_BASE_ID=$2
-            AIRTABLE_PROJETS_SOUMIS=$3
-            AIRTABLE_TOKEN=$4
-            VITE_RECAPTCHA_SITE_KEY=$5
-            VITE_RECAPTCHA_ACTION=submit_lead
-            RECAPTCHA_SITE_KEY=$5
-            RECAPTCHA_ENTERPRISE_API_KEY=$6
-            RECAPTCHA_ENTERPRISE_PROJECT_ID=synapflows
-            RECAPTCHA_EXPECTED_ACTION=submit_lead
-            RECAPTCHA_MIN_SCORE=0.5
-            ENVFILE
-          
-          echo "DEBUG: .env created, first 3 lines:"
-          head -3 .env
           
           echo "🏗️  Building Docker image..."
           docker compose build --no-cache
