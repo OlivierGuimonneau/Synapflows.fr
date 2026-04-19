@@ -41,7 +41,7 @@ jobs:
           
           # Deploy script
           echo "🚀 Starting deployment..."
-          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} bash -s ${{ secrets.VPS_PATH }} ${{ secrets.AIRTABLE_BASE_ID }} ${{ secrets.AIRTABLE_PROJETS_SOUMIS }} ${{ secrets.AIRTABLE_TOKEN }} ${{ secrets.RECAPTCHA_SITE_KEY }} ${{ secrets.RECAPTCHA_ENTERPRISE_API_KEY }} << DEPLOY_SCRIPT
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} bash -s ${{ secrets.VPS_PATH }} ${{ secrets.AIRTABLE_BASE_ID }} ${{ secrets.AIRTABLE_PROJETS_SOUMIS }} ${{ secrets.AIRTABLE_TOKEN }} ${{ secrets.RECAPTCHA_SITE_KEY }} ${{ secrets.RECAPTCHA_ENTERPRISE_API_KEY }} << 'DEPLOY_SCRIPT'
           set -e
           
           echo "DEBUG: Arguments received: $1 $2 $3 $4 $5 $6"
