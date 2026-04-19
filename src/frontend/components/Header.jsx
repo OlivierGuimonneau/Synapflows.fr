@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
 export default function Header() {
   const [theme, setTheme] = useState('light');
+  const location = useLocation();
 
   const toggleTheme = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
@@ -9,12 +11,30 @@ export default function Header() {
     document.documentElement.setAttribute('data-theme', newTheme);
   };
 
+  const isActive = (path) => location.pathname === path;
+
   return (
     <header className="site-header">
-      <div className="brand">
+      <Link to="/" className="brand">
         <img src="/assets/images/logo-synapflows.png" alt="Logo SynapFlows" />
-        <div className="brand-note">Qualification de projet</div>
-      </div>
+        <div className="brand-name">SynapFlows</div>
+      </Link>
+
+      <nav className="site-nav">
+        <Link
+          to="/"
+          className={`nav-link ${isActive('/') ? 'active' : ''}`}
+        >
+          Accueil
+        </Link>
+        <Link
+          to="/formulaire-qualification"
+          className={`nav-link ${isActive('/formulaire-qualification') ? 'active' : ''}`}
+        >
+          Qualifier mon projet
+        </Link>
+      </nav>
+
       <button className="theme-toggle" onClick={toggleTheme} aria-label="Changer de thème">
         {theme === 'dark' ? (
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

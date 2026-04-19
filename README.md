@@ -1,6 +1,8 @@
-# SynapFlows – Application React + Node
+# 🚀 SynapFlows.fr – Site Corporate & Landing Page
 
-Formulaire de qualification de projet moderne basé sur une architecture **React (frontend) + Express (backend)** avec intégration Airtable.
+Bienvenue sur **www.synapflows.fr**, le site corporate et landing page de SynapFlows.
+
+Nous spécialisamos dans **l'automatisation des processus métier** et la **création d'applications spécifiques**.
 
 ## 🚀 Vue d'ensemble
 
@@ -88,291 +90,153 @@ SynapFlows-ProjectSubmission/
 
 ---
 
-## 🏗️ Architecture
+## � Résumé
 
-### Frontend (React + Vite)
-
-**Flux de données:**
-```
-App.jsx (layout global)
-  ├── Header (logo, theme toggle)
-  ├── Hero (accueil)
-  ├── FormPage (state du formulaire)
-  │   ├── Progress (barre de progression)
-  │   ├── Form (sélecteur d'étape)
-  │   │   └── Step1-6 (champs du formulaire)
-  │   └── SuccessScreen (confirmation post-submit)
-  └── Footer (copyright)
-```
-
-**Gestion d'état:**
-- Centralisée dans `FormPage.jsx`
-- État: `currentStep`, `formData`, `submitted`, `loading`
-- Communication parent → enfant via props (`data`, `onChange`, `onNext`)
-
-**Styles:**
-- Architecture modulaire par **responsabilité**:
-  - `variables.css` → design system (tokens, couleurs, espacement)
-  - `base.css` → reset, typographie
-  - `layout.css` → structure (header, hero, footer, cards)
-  - `forms.css` → inputs, boutons, listes de choix
-- Système de **thèmes** via CSS custom properties (`--color-primary`, etc.)
-- Support **light/dark** mode avec `data-theme` attribute
-
-### Backend (Express)
-
-**Routes:**
-- `GET /api/config-test` → Debug (affiche config chargée)
-- `POST /api/submit` → Reçoit les données du formulaire
-  - ↓ valide le payload
-  - ↓ transforme les champs via `mapToAirtableFields()`
-  - ↓ envoie à l'API Airtable via HTTPS
-  - ↓ retourne succès ou erreur
-
-**Middleware:**
-- `dotenv` → charge `.env` en `process.env`
-- `cors()` → autorise requêtes cross-origin
-- `express.json()` → parse body JSON
-- `express.static()` → sert les fichiers de build (production)
-
-**Airtable Integration:**
-- Service: `backend/services/airtable.js`
-- Fonction clé: `mapToAirtableFields(payload)`
-  - Transforme les noms de champs du formulaire en colonnes Airtable
-  - Ex: `prenom` → `Prénom` (avec accent)
-  - Format date: `YYYY-MM-DD HH:mm` (24h)
-- Authentification: Bearer token dans header `Authorization`
+| Aspect | Détail |
+|--------|--------|
+| **Domaine** | www.synapflows.fr |
+| **Type** | Site corporate multi-page + landing page de qualification |
+| **Frontend** | React 18.2 + Vite 7 + React Router |
+| **Backend** | Node.js + Express |
+| **Base de données** | Airtable (table `Projets Soumis`) |
+| **Sécurité** | reCAPTCHA v3 + RGPD by design |
+| **Déploiement** | Docker sur VPS IONOS 82.165.251.91 |
+| **CI/CD** | GitHub Actions → SSH → Docker Compose |
 
 ---
 
-## ⚙️ Configuration
+## 🛠️ Pages & Features
 
-### 1. Installer les dépendances
+### Accueil (`/`)
+- Hero section + promesse de valeur
+- 5 services : Automatisation, Applications Web, Intégration, Audit, Maintenance
+- Section valeur : 30 ans exp + dev rapide + hébergement France
+- CTA : Démo + Qualifier mon projet
 
+### Formulaire (`/formulaire-qualification`)
+- Multi-étape pour qualification
+- reCAPTCHA v3 (vérification serveur)
+- Enregistrement dans Airtable
+
+---
+
+## 🚀 Démarrage local
+
+### Installation
 ```bash
 npm install
 ```
 
-Cela installe:
-- React, React-DOM
-- Vite et plugin React
-- Express, CORS
-- dotenv pour gestion environnement
-- concurrently pour lancer dev et serveur en parallèle
-
-### 2. Créer `.env` (sécurité)
-
-À la racine du projet, créer `.env`:
-
-```bash
-AIRTABLE_BASE_ID=appvGEsLWrImfUU9i
-AIRTABLE_TABLE=Projets Soumis
-AIRTABLE_TOKEN=pat...extraLongToken...
-PORT=5001
-NODE_ENV=development
-```
-
-**Obtenir ces valeurs:**
-1. **BASE_ID**: Ouvrir votre base Airtable → URL: `airtable.com/{BASE_ID}/...`
-2. **Token**: https://airtable.com/account/tokens → Create → Copier token
-3. **TABLE**: Nom exact de votre table dans Airtable
-
-⚠️ **NE JAMAIS** commiter `.env` (déjà dans `.gitignore`)
-
-### 3. Configurer Airtable
-
-Votre base Airtable doit avoir une table `Projets Soumis` avec ces colonnes:
-
-```
-Prénom (Text)
-Nom (Text)
-Email (Email)
-Téléphone (Phone)
-Fonction (Text)
-Entreprise (Text)
-Type de projet (Text)
-Description du projet (Long text)
-Objectif principal (Text)
-Fonctionnalités (Text) [reçoit: "Fonctionnalité 1, Fonctionnalité 2"]
-Priorités V1 (Text)
-Utilisateurs lancement (Number)
-Utilisateurs à 1 an (Number)
-Profils utilisateurs (Text) [reçoit: "PMO, Dev, Designer"]
-Conformité et sécurité (Text)
-Intégrations existantes (Text)
-Ambiance visuelle (Text) [reçoit: "Moderne, Minimaliste"]
-Références design (Text)
-Contraintes de charte (Text)
-Budget (Text)
-Délai (Text)
-Informations complémentaires (Long text)
-Date de soumission (DateTime) [format: YYYY-MM-DD HH:mm]
-Source (Text) [valeur: "Formulaire site SynapFlows"]
-```
-
----
-
-## 🛠️ Scripts disponibles
-
 ### Développement
-
 ```bash
 npm run dev
 ```
-Lance **deux serveurs en parallèle**:
-1. **Vite dev server** (port 5174, hot reload)
-2. **Express backend** (port 5001, API)
-- Les requêtes `/api/*` sont automatiquement routées vers Express (via proxy Vite)
+- Frontend : http://localhost:5173
+- Backend : http://localhost:5001
+- Proxy : `/api` → http://localhost:5001
 
-### Production
-
+### Build
 ```bash
 npm run build
 ```
-Exécute Vite pour générer les fichiers optimisés dans `public/`
 
-```bash
-npm start
+---
+
+## 📁 Structure
+
 ```
-Build + Lance le serveur Express en production (sert les fichiers statiques de `public/`)
+src/
+├── frontend/
+│   ├── pages/
+│   │   ├── HomePage.jsx       ← Accueil
+│   │   └── FormPage.jsx       ← Formulaire
+│   ├── components/
+│   │   ├── Header.jsx         ← Navigation
+│   │   ├── Footer.jsx
+│   │   ├── Form.jsx
+│   │   ├── Hero.jsx
+│   │   └── steps/             ← Étapes formulaire
+│   └── styles/
+│       ├── variables.css      ← Design tokens
+│       ├── homepage.css
+│       ├── forms.css
+│       └── ...
 
-### Autres
+backend/
+├── index.js                   ← Serveur Express
+├── routes/
+│   └── submit.js              ← POST /api/submit
+└── services/
+    └── airtable.js            ← Intégration Airtable
 
-```bash
-npm run server:dev        # Lance juste Express (sans Vite)
-npm run preview          # Preview build Vite (sans serveur)
+docker-compose.yml            ← Production
+Dockerfile
 ```
 
 ---
 
-## 📊 Le formulaire (6 étapes)
+## 🔐 Sécurité & RGPD
 
-| Étape | Titre | Champs | Notes |
-|---|---|---|---|
-| **1** | Contact | Prénom*, Nom*, Email*, Téléphone, Fonction, Entreprise* | Identification du demandeur |
-| **2** | Description | Type*, Description*, Objectif, Priorités | Contexte du projet |
-| **3** | Fonctionnalités | Cocher les fonctionnalités souhaitées | Multi-select |
-| **4** | Utilisateurs | Utilisateurs V1*, Utilisateurs 1 an*, Profils*, Conformité*, Intégrations | Scope technique |
-| **5** | Design | Ambiance visuelle*, Références, Contraintes charte | Branding & UX |
-| **6** | Budget | Budget, Délai, Commentaires | Clôture + message rassurant |
-
-\* = champs obligatoires
+✅ reCAPTCHA v3 (validation serveur)  
+✅ CORS restrictif  
+✅ Headers HTTP sécurisés (CSP, HSTS, X-Frame-Options)  
+✅ RGPD by design (minimisation données)  
+✅ Secrets en GitHub Actions  
+✅ Rate limiting
 
 ---
 
-## 🖼️ Gestion des images
+## 📝 Variables d'environnement
 
-**Source (développement):**
-```
-src/frontend/public/assets/images/
-├── favicon.png           • Icône browser tab (32×32px)
-└── logo-synapflows.png   • Logo en-tête (48px hauteur)
-```
+```env
+PORT=5000
+NODE_ENV=production
 
-**Build (production):**
-```
-public/assets/images/    • Généré par Vite depuis src/frontend/public/
-├── favicon.png
-└── logo-synapflows.png
-```
+# Airtable
+AIRTABLE_BASE_ID=appvGEsLWrImfUU9i
+AIRTABLE_PROJETS_SOUMIS=Projets Soumis
+AIRTABLE_TOKEN=patt***
 
-### Utilisation dans le code
-
-**En développement:**
-```jsx
-// Chemin public dans React
-<img src="/assets/images/logo-synapflows.png" alt="Logo" />
-```
-
-**Chemins statiques:**
-- Frontend: Vite sert depuis `src/frontend/public/`
-- Backend: Express sert depuis `public/` (après build)
-- Build output dans `vite.config.js`: `outDir: '../../public'`
-
----
-
-## 🔧 Dépannage
-
-### Erreur "PORT 5001 already in use"
-```bash
-# Trouver le process utilisant le port
-netstat -ano | findstr :5001
-
-# Tuer le process (remplacer PID)
-taskkill /PID 12345 /F
-```
-
-### Erreur Airtable "NOT_FOUND" (404)
-→ Vérifier `.env`: `AIRTABLE_BASE_ID` et `AIRTABLE_TABLE` corrects
-
-### Erreur "UNKNOWN_FIELD_NAME" (422)
-→ Les colonnes Airtable ne correspondent pas aux champs envoyés
-→ Vérifier noms des colonnes (accents, capitales) dans `mapToAirtableFields()`
-
-### Vite ne hot-reload pas
-```bash
-# S'assurer que Vite écoute sur toutes les interfaces
-npm run dev   # Devrait afficher "http://<ip>:5174"
+# reCAPTCHA
+VITE_RECAPTCHA_SITE_KEY=6Lc***
+RECAPTCHA_SITE_KEY=6Lc***
+RECAPTCHA_ENTERPRISE_API_KEY=AIza***
 ```
 
 ---
 
-## 📝 Environment Variables
+## 📦 Déploiement
 
-| Variable | Exemple | Description |
-|---|---|---|
-| `AIRTABLE_BASE_ID` | `appvGEsLWrImfUU9i` | Identifiant de votre base Airtable |
-| `AIRTABLE_TABLE` | `Projets Soumis` | Nom de la table (exact, avec espaces) |
-| `AIRTABLE_TOKEN` | `pat...` | Token API Airtable (sécurisé) |
-| `PORT` | `5001` | Port du serveur Express |
-| `NODE_ENV` | `development` | `development` ou `production` |
+**VPS**
+- IP: 82.165.251.91
+- Port: 5000 (interne) → 80/443 via Traefik
+- Réseau: `n8n-https_default`
+- Labels: `synapflows-www-*`
 
----
-
-## 🚀 Démarrer rapidement
-
-```bash
-# 1. Cloner/ouvrir le projet
-cd SynapFlows-ProjectSubmission
-
-# 2. Installer les dépendances
-npm install
-
-# 3. Créer .env avec vos identifiants Airtable
-# (Copier .env.example et remplir)
-
-# 4. Lancer le dev
-npm run dev
-
-# 5. Ouvrir dans le navigateur
-# http://localhost:5174
-
-# 6. Remplir le formulaire et tester la soumission
+**CI/CD**
+```
+git push main
+  ↓
+GitHub Actions (.github/workflows/deploy.yml)
+  ↓
+SSH déploiement
+  ↓
+docker compose build/up
 ```
 
 ---
 
-## 📚 Fichiers importants
+## 📚 Documentation
 
-| Fichier | Rôle |
-|---|---|
-| [SETUP.md](SETUP.md) | Guide d'installation détaillé étape par étape |
-| [QUICKSTART.md](QUICKSTART.md) | Démarrage express (5 min) |
-| [MIGRATION_NOTES.md](MIGRATION_NOTES.md) | Historique de la migration |
-| `.env.example` | Modèle de configuration |
-| `vite.config.js` | Configuration build (chemin output, proxy API) |
-| `backend/services/airtable.js` | Logique de transformation des champs |
+| Lien | Contenu |
+|------|---------|
+| `.github/copilot-instructions.md` | Architecture & conventions |
+| `.github/instructions/` | Règles sécurité, frontend, backend |
+| `.github/skills/` | Bonnes pratiques |
+| `.docs-archived/README.md` | Fichiers obsolètes |
 
 ---
 
-## 📞 Support
-
-Pour des questions ou problèmes:
-1. Lire [SETUP.md](SETUP.md) et [MIGRATION_NOTES.md](MIGRATION_NOTES.md)
-2. Vérifier les logs dans la console (backend et frontend)
-3. Vérifier la configuration `.env`
-4. Consulter la table d'erreurs Airtable API
-
----
-
-**Version:** 1.0.0 | **Mise à jour:** Avril 2026
+**Version:** 2.0.0 (SynapFlows Corporate Site)  
+**Maintainers:** SynapFlows Team  
+**License:** Propriétaire
