@@ -49,7 +49,7 @@ export default function HomePage() {
         </div>
         <div className="hero-image">
           <img 
-            src="/assets/images/VidéoSynapFlows.gif" 
+            src="/assets/images/video-synapflows.gif" 
             alt="SynapFlows Animation" 
             className="hero-animation"
           />
