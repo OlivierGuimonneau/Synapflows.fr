@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import StatsSection from '../components/StatsSection';
+import AnimatedSubtitle from '../components/AnimatedSubtitle';
 import '../styles/homepage.css';
 
 export default function HomePage() {
@@ -43,7 +44,7 @@ export default function HomePage() {
       <section className="hero-section">
         <div className="hero-content">
           <h1>Accélèrez le développement de votre business.</h1>
-          <p className="hero-subtitle">Développement rapide • Expertise de 30 ans • Hébergement en France</p>
+          <AnimatedSubtitle />
           <p className="hero-description">
             Synapflows accompagne les entreprises dans leur transformation digitale grâce à l'automatisation intelligente et au développement accéléré par l'IA.
           </p>
