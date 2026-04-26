@@ -49,7 +49,7 @@ export default function HomePage() {
           </p>
           <div className="hero-buttons">
             <Link to="/formulaire-qualification" className="btn btn-primary">
-              Commencer une qualification de projet
+              Vous avez un projet ?
             </Link>
           </div>
         </div>
