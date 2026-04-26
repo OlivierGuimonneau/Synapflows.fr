@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import StatsSection from '../components/StatsSection';
 import '../styles/homepage.css';
 
 export default function HomePage() {
@@ -7,27 +8,32 @@ export default function HomePage() {
     {
       icon: '⚙️',
       title: 'Automatisation des Processus',
-      description: 'Optimisez vos workflows métier et réduisez les tâches manuelles avec nos solutions d\'automatisation (RPA).'
+      description: 'Transformez vos workflows manuels en flux intelligents et autonomes. Éliminez les tâches répétitives et laissez vos équipes se concentrer sur la valeur ajoutée.'
     },
     {
       icon: '💻',
       title: 'Applications Web Custom',
-      description: 'Développement d\'applications spécifiques adaptées exactement à vos besoins métier.'
+      description: 'Développez vos applications à une vitesse inégalée grâce à notre approche d\'IA-augmented development. Du prototype à la production en quelques jours.'
     },
     {
       icon: '🔗',
-      title: 'Intégration Systèmes',
-      description: 'Connectez vos outils et données pour une vue d\'ensemble unifiée de votre activité.'
+      title: 'Intégration & Connectivité',
+      description: 'Connectez l\'ensemble de votre écosystème digital : ERP, CRM, outils SaaS, bases de données. Tout communique, tout est synchronisé.'
     },
     {
-      icon: '🎯',
-      title: 'Audit & Consulting',
-      description: 'Analyser vos processus actuels et identifier les opportunités d\'optimisation.'
+      icon: '📈',
+      title: 'Tableaux de bord & Analytique',
+      description: 'Visualisez vos données en temps réel avec des dashboards personnalisés. Prenez des décisions éclairées basées sur vos indicateurs clés.'
     },
     {
       icon: '🛠️',
       title: 'Maintenance & Support',
       description: 'Support technique continu et maintenance de vos solutions pour une performance optimale.'
+    },
+    {
+      icon: '🎯',
+      title: 'Conseil & Accompagnement',
+      description: 'De l\'audit de vos processus à la conduite du changement, nous vous guidons à chaque étape de votre transformation digitale.'
     }
   ];
 
@@ -36,10 +42,10 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="hero-section">
         <div className="hero-content">
-          <h1>Transformez votre entreprise avec l'automatisation</h1>
+          <h1>Accélèrez le développement de votre business.</h1>
           <p className="hero-subtitle">Développement rapide • Expertise de 30 ans • Hébergement en France</p>
           <p className="hero-description">
-            SynapFlows concrétise vos projets numériques en combinant la rapidité d'exécution, l'expérience de grandes multinationalles et la confiance du stockage data local.
+            Synapflows accompagne les entreprises dans leur transformation digitale grâce à l'automatisation intelligente et au développement accéléré par l'IA.
           </p>
           <div className="hero-buttons">
             <Link to="/formulaire-qualification" className="btn btn-primary">
@@ -56,11 +62,15 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Stats Section */}
+      <StatsSection />
+
       {/* Services Section */}
       <section className="services-section">
         <div className="container">
-          <h2>Nos Services</h2>
-          <p className="section-subtitle">Tout ce dont vous avez besoin pour innover et optimiser</p>
+          <span className="badge">Nos expertises</span>
+          <h2>Des solutions pour chaque <span className="gradient-text">défi digital</span></h2>
+          <p className="section-subtitle">De l'automatisation à l'intelligence artificielle, nous couvrons l'ensemble du spectre de la transformation digitale de votre entreprise.</p>
           <div className="services-grid">
             {services.map((service, index) => (
               <div key={index} className="service-card">
@@ -73,25 +83,43 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Value Proposition Section */}
-      <section className="value-section">
+      {/* Method Section */}
+      <section className="method-section">
         <div className="container">
-          <div className="value-content">
-            <div className="value-item">
-              <div className="value-number">30<span>ans</span></div>
-              <p>D'expérience dans les plus grandes multinationales</p>
+          <span className="badge">Notre Méthode</span>
+          <h2>De l'idée à la <span className="gradient-text">mise en production</span></h2>
+          <div className="timeline">
+            <div className="timeline-item timeline-item--primary">
+              <div className="timeline-marker">🔍</div>
+              <div className="timeline-content">
+                <span className="timeline-label">ÉTAPE 01</span>
+                <h3>Audit & Analyse</h3>
+                <p>Nous cartographions vos processus existants, identifions les goulots d'étranglement et définissons les opportunités d'automatisation à fort impact.</p>
+              </div>
             </div>
-            <div className="value-item">
-              <div className="value-number">⚡</div>
-              <p>Développement rapide sans compromettre la qualité</p>
+            <div className="timeline-item timeline-item--secondary">
+              <div className="timeline-marker">💡</div>
+              <div className="timeline-content">
+                <span className="timeline-label">ÉTAPE 02</span>
+                <h3>Conception & Stratégie</h3>
+                <p>Nous concevons l'architecture de la solution, choisissons les technologies IA adaptées et planifions les phases de déploiement.</p>
+              </div>
             </div>
-            <div className="value-item">
-              <div className="value-number">🇫🇷</div>
-              <p>Hébergement en France - Conformité RGPD garantie</p>
+            <div className="timeline-item timeline-item--primary">
+              <div className="timeline-marker">{'</>'}</div>
+              <div className="timeline-content">
+                <span className="timeline-label">ÉTAPE 03</span>
+                <h3>Développement rapide</h3>
+                <p>Grâce au vibe coding et à nos templates IA, nous développons des solutions fonctionnelles en un temps record, avec des itérations hebdomadaires.</p>
+              </div>
             </div>
-            <div className="value-item">
-              <div className="value-number">⏱️</div>
-              <p>Gain de temps mesurable sur vos processus</p>
+            <div className="timeline-item timeline-item--secondary">
+              <div className="timeline-marker">🚀</div>
+              <div className="timeline-content">
+                <span className="timeline-label">ÉTAPE 04</span>
+                <h3>Déploiement & Suivi</h3>
+                <p>Mise en production, formation de vos équipes, monitoring continu et optimisation des performances pour maximiser votre ROI.</p>
+              </div>
             </div>
           </div>
         </div>
@@ -100,11 +128,12 @@ export default function HomePage() {
       {/* CTA Section */}
       <section className="cta-section">
         <div className="container">
-          <h2>Parlons de votre projet</h2>
-          <p>Explorez comment SynapFlows peut transformer votre activité</p>
+          <span className="badge">Disponible pour nouveaux projets</span>
+          <h2>Prêt à transformer <span className="gradient-text">votre entreprise</span> ?</h2>
+          <p>Discutons de vos défis et découvrez comment Synapflows peut automatiser et accélérer votre croissance grâce à l'IA.</p>
           <div className="cta-buttons">
             <Link to="/formulaire-qualification" className="btn btn-outline btn-large">
-              Qualifier mon projet
+              Prendre contact →
             </Link>
           </div>
         </div>

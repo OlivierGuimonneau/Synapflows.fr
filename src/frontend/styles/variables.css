@@ -50,6 +50,9 @@
   --text-base: clamp(1rem, 0.96rem + 0.2vw, 1.1rem);
   --text-lg: clamp(1.125rem, 1rem + 0.7vw, 1.45rem);
   --text-xl: clamp(1.5rem, 1.15rem + 1.2vw, 2.15rem);
+  --text-2xl: clamp(2rem, 1.5rem + 1.8vw, 2.75rem);
+  --text-3xl: clamp(2.5rem, 2rem + 2vw, 3.25rem);
+  --text-4xl: clamp(3rem, 2.25rem + 2.5vw, 4rem);
 
   --space-1: .25rem; --space-2: .5rem; --space-3: .75rem; --space-4: 1rem;
   --space-5: 1.25rem; --space-6: 1.5rem; --space-8: 2rem; --space-10: 2.5rem;
