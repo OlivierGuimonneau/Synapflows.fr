@@ -62,9 +62,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <StatsSection />
-
       {/* Services Section */}
       <section className="services-section">
         <div className="container">
@@ -82,6 +79,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Stats Section */}
+      <StatsSection />
 
       {/* Method Section */}
       <section className="method-section">
