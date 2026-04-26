@@ -1,0 +1,133 @@
+/* Legal Page Styles */
+
+.legal-page {
+  width: 100%;
+  background: var(--color-bg);
+}
+
+/* Legal Hero Section */
+.legal-hero {
+  padding: var(--space-12) var(--space-6);
+  background: var(--color-accent-gradient);
+  color: #fff;
+  text-align: center;
+}
+
+.legal-hero h1 {
+  font-size: var(--text-2xl);
+  margin-bottom: var(--space-2);
+  font-weight: 700;
+}
+
+.legal-hero p {
+  font-size: var(--text-base);
+  opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+  .legal-hero {
+    padding: var(--space-8) var(--space-4);
+  }
+
+  .legal-hero h1 {
+    font-size: var(--text-xl);
+  }
+}
+
+/* Legal Content Section */
+.legal-content {
+  padding: var(--space-12) var(--space-6);
+}
+
+@media (max-width: 768px) {
+  .legal-content {
+    padding: var(--space-8) var(--space-4);
+  }
+}
+
+.legal-content .container {
+  max-width: 900px;
+}
+
+/* Legal Sections */
+.legal-section {
+  margin-bottom: var(--space-12);
+  padding-bottom: var(--space-8);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.legal-section:last-child {
+  border-bottom: none;
+}
+
+.legal-section h2 {
+  font-size: var(--text-xl);
+  color: var(--color-text);
+  margin-bottom: var(--space-4);
+  font-weight: 600;
+}
+
+.legal-section p {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: 1.8;
+  margin-bottom: var(--space-4);
+}
+
+.legal-section p:last-child {
+  margin-bottom: 0;
+}
+
+.legal-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.legal-section li {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: 1.8;
+  margin-bottom: var(--space-3);
+  padding-left: var(--space-6);
+  position: relative;
+}
+
+.legal-section li:before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--color-primary);
+  font-weight: bold;
+}
+
+.legal-info {
+  background: var(--color-surface);
+  border-left: 3px solid var(--color-accent-gradient);
+  padding: var(--space-6);
+  border-radius: var(--radius-md);
+  margin: var(--space-4) 0;
+}
+
+.legal-info p {
+  margin-bottom: var(--space-3);
+  font-size: var(--text-sm);
+}
+
+.legal-info p:last-child {
+  margin-bottom: 0;
+}
+
+.legal-info strong {
+  color: var(--color-text);
+}
+
+@media (max-width: 768px) {
+  .legal-section h2 {
+    font-size: var(--text-lg);
+  }
+
+  .legal-info {
+    padding: var(--space-4);
+  }
+}

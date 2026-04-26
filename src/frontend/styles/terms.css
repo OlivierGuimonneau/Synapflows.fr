@@ -1,0 +1,141 @@
+/* Terms Page Styles */
+
+.terms-page {
+  width: 100%;
+  background: var(--color-bg);
+}
+
+/* Terms Hero Section */
+.terms-hero {
+  padding: var(--space-12) var(--space-6);
+  background: var(--color-accent-gradient);
+  color: #fff;
+  text-align: center;
+}
+
+.terms-hero h1 {
+  font-size: var(--text-2xl);
+  margin-bottom: var(--space-2);
+  font-weight: 700;
+}
+
+.terms-hero p {
+  font-size: var(--text-base);
+  opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+  .terms-hero {
+    padding: var(--space-8) var(--space-4);
+  }
+
+  .terms-hero h1 {
+    font-size: var(--text-xl);
+  }
+}
+
+/* Terms Content Section */
+.terms-content {
+  padding: var(--space-12) var(--space-6);
+}
+
+@media (max-width: 768px) {
+  .terms-content {
+    padding: var(--space-8) var(--space-4);
+  }
+}
+
+.terms-content .container {
+  max-width: 900px;
+}
+
+/* Terms Sections */
+.terms-section {
+  margin-bottom: var(--space-12);
+  padding-bottom: var(--space-8);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.terms-section:last-child {
+  border-bottom: none;
+}
+
+.terms-section h2 {
+  font-size: var(--text-xl);
+  color: var(--color-text);
+  margin-bottom: var(--space-4);
+  font-weight: 600;
+}
+
+.terms-section h3 {
+  font-size: var(--text-base);
+  color: var(--color-text);
+  margin-top: var(--space-6);
+  margin-bottom: var(--space-3);
+  font-weight: 600;
+}
+
+.terms-section p {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: 1.8;
+  margin-bottom: var(--space-4);
+}
+
+.terms-section p:last-child {
+  margin-bottom: 0;
+}
+
+.terms-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.terms-section li {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: 1.8;
+  margin-bottom: var(--space-3);
+  padding-left: var(--space-6);
+  position: relative;
+}
+
+.terms-section li:before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--color-primary);
+  font-weight: bold;
+}
+
+.terms-info {
+  background: var(--color-surface);
+  border-left: 3px solid var(--color-accent-gradient);
+  padding: var(--space-6);
+  border-radius: var(--radius-md);
+  margin: var(--space-4) 0;
+}
+
+.terms-info p {
+  margin-bottom: var(--space-3);
+  font-size: var(--text-sm);
+}
+
+.terms-info p:last-child {
+  margin-bottom: 0;
+}
+
+.terms-info strong {
+  color: var(--color-text);
+}
+
+@media (max-width: 768px) {
+  .terms-section h2 {
+    font-size: var(--text-lg);
+  }
+
+  .terms-info {
+    padding: var(--space-4);
+  }
+}
