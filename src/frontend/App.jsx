@@ -6,6 +6,7 @@ import QualificationPage from './pages/QualificationPage';
 import LegalPage from './pages/LegalPage';
 import TermsPage from './pages/TermsPage';
 import FAQPage from './pages/FAQPage';
+import Page404 from './pages/Page404';
 import Footer from './components/Footer';
 import './styles/index.css';
 
@@ -20,6 +21,7 @@ export default function App() {
           <Route path="/mentions-legales" element={<LegalPage />} />
           <Route path="/conditions-generales" element={<TermsPage />} />
           <Route path="/faq" element={<FAQPage />} />
+          <Route path="*" element={<Page404 />} />
         </Routes>
         <Footer />
       </div>

@@ -10,11 +10,13 @@ export default defineConfig({
     emptyOutDir: true,
   },
   server: {
+    middlewareMode: false,
     proxy: {
       '/api': {
         target: 'http://localhost:5001',
         changeOrigin: true
       }
     }
-  }
+  },
+  appType: 'spa'
 })
