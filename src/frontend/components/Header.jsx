@@ -41,6 +41,13 @@ export default function Header() {
           Accueil
         </Link>
         <Link
+          to="/faq"
+          className={`nav-link ${isActive('/faq') ? 'active' : ''}`}
+          onClick={handleMenuClose}
+        >
+          FAQ
+        </Link>
+        <Link
           to="/formulaire-qualification"
           className={`nav-link ${isActive('/formulaire-qualification') ? 'active' : ''}`}
           onClick={handleMenuClose}

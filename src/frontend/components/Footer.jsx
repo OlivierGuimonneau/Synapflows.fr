@@ -8,6 +8,7 @@ export default function Footer() {
         <div className="footer-content">
           <p className="footer-copyright">&copy; 2026 SynapFlows. Tous droits réservés.</p>
           <nav className="footer-links">
+            <Link to="/faq">FAQ</Link>
             <Link to="/mentions-legales">Mentions légales</Link>
             <Link to="/conditions-generales">Conditions générales</Link>
           </nav>
