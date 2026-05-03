@@ -4,12 +4,12 @@ import { submitToAirtable } from '../services/airtable.js';
 
 const router = express.Router();
 
-// 🔐 Fonction de validation reCAPTCHA v3
+// 🔐 Fonction de validation reCAPTCHA Enterprise
 async function verifyRecaptcha(token) {
   // 🔧 EN DÉVELOPPEMENT: bypass reCAPTCHA pour tester localement
   if (process.env.NODE_ENV === 'development') {
     console.log('[reCAPTCHA] Mode DÉVELOPPEMENT - Validation contournée');
-    return { success: true, score: 0.9, action: 'submit_form' };
+    return { success: true, score: 0.9, action: process.env.RECAPTCHA_EXPECTED_ACTION || 'submit_lead' };
   }
 
   if (!token) {
@@ -17,46 +17,54 @@ async function verifyRecaptcha(token) {
     throw new Error('Token reCAPTCHA manquant');
   }
 
-  try {
-    console.log('[reCAPTCHA DEBUG] Vérification du token...');
-    console.log('[reCAPTCHA DEBUG] Clé secrète disponible:', !!process.env.RECAPTCHA_SECRET_KEY);
+  const apiKey = process.env.RECAPTCHA_ENTERPRISE_API_KEY;
+  const projectId = process.env.RECAPTCHA_ENTERPRISE_PROJECT_ID;
+  const siteKey = process.env.RECAPTCHA_SITE_KEY;
+  const expectedAction = process.env.RECAPTCHA_EXPECTED_ACTION || 'submit_lead';
+  const minScore = parseFloat(process.env.RECAPTCHA_MIN_SCORE || '0.5');
 
-    const params = new URLSearchParams();
-    params.append('secret', process.env.RECAPTCHA_SECRET_KEY);
-    params.append('response', token);
+  if (!apiKey || !projectId || !siteKey) {
+    console.error('[reCAPTCHA] Variables Enterprise manquantes (RECAPTCHA_ENTERPRISE_API_KEY, RECAPTCHA_ENTERPRISE_PROJECT_ID, RECAPTCHA_SITE_KEY)');
+    throw new Error('Configuration reCAPTCHA Enterprise incomplète');
+  }
+
+  try {
+    console.log('[reCAPTCHA] Vérification Enterprise en cours...');
 
     const response = await axios.post(
-      'https://www.google.com/recaptcha/api/siteverify',
-      params,
+      `https://recaptchaenterprise.googleapis.com/v1/projects/${projectId}/assessments?key=${apiKey}`,
+      {
+        event: {
+          token,
+          siteKey,
+          expectedAction
+        }
+      },
       { timeout: 5000 }
     );
 
-    console.log('[reCAPTCHA DEBUG] ✅ Réponse Google reçue:', JSON.stringify(response.data));
+    const { tokenProperties, riskAnalysis } = response.data;
 
-    const { success, score, action, challenge_ts, hostname } = response.data;
-
-    console.log('[reCAPTCHA] Résultat:', { success, score, action, hostname });
-
-    // reCAPTCHA v3 retourne un score entre 0.0 et 1.0
-    // 1.0 = très probable que ce soit un utilisateur légitime
-    // 0.0 = très probable que ce soit un bot
-    // Seuil recommandé: 0.5
-    if (!success) {
-      console.error('[reCAPTCHA] Google a rejeté le token:', response.data);
-      throw new Error(`Google a rejeté le token: ${JSON.stringify(response.data)}`);
+    if (!tokenProperties?.valid) {
+      console.error('[reCAPTCHA] Token invalide:', tokenProperties?.invalidReason);
+      throw new Error(`Token invalide: ${tokenProperties?.invalidReason || 'raison inconnue'}`);
     }
 
-    if (score < 0.5) {
+    const score = riskAnalysis?.score ?? 0;
+    const action = tokenProperties?.action;
+
+    console.log('[reCAPTCHA] Résultat Enterprise:', { valid: tokenProperties.valid, score, action });
+
+    if (score < minScore) {
       console.warn('[reCAPTCHA] Score trop bas:', score);
-      throw new Error(`Score reCAPTCHA insuffisant (${score}). Le domaine ou la clé peut ne pas être configuré correctement.`);
+      throw new Error(`Score reCAPTCHA insuffisant (${score})`);
     }
 
     console.log('[reCAPTCHA] ✅ Validé avec succès (score: ' + score + ')');
     return { success: true, score, action };
   } catch (error) {
-    console.error('[reCAPTCHA ERROR] Message:', error.message);
     if (error.response) {
-      console.error('[reCAPTCHA ERROR] Réponse:', error.response.data);
+      console.error('[reCAPTCHA ERROR] Réponse Google:', JSON.stringify(error.response.data));
     }
     throw new Error('Échec de la vérification reCAPTCHA: ' + error.message);
   }
