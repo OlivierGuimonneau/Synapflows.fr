@@ -21,12 +21,13 @@ async function verifyRecaptcha(token) {
     console.log('[reCAPTCHA DEBUG] Vérification du token...');
     console.log('[reCAPTCHA DEBUG] Clé secrète disponible:', !!process.env.RECAPTCHA_SECRET_KEY);
 
+    const params = new URLSearchParams();
+    params.append('secret', process.env.RECAPTCHA_SECRET_KEY);
+    params.append('response', token);
+
     const response = await axios.post(
       'https://www.google.com/recaptcha/api/siteverify',
-      {
-        secret: process.env.RECAPTCHA_SECRET_KEY,
-        response: token
-      },
+      params,
       { timeout: 5000 }
     );
 

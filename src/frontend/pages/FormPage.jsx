@@ -39,9 +39,13 @@ export default function FormPage({ onSubmitted }) {
 
     setLoading(true);
     try {
+      if (!reCaptchaToken) {
+        throw new Error('Token reCAPTCHA manquant, veuillez réessayer.');
+      }
+
       const payload = {
         ...formData,
-        reCaptchaToken: reCaptchaToken || 'bypass_token',
+        reCaptchaToken,
         submitted_at: new Date().toISOString()
       };
 
