@@ -6,18 +6,6 @@ const router = express.Router();
 
 // 🔐 Fonction de validation reCAPTCHA v3
 async function verifyRecaptcha(token) {
-  // 🔧 BYPASS: utilisez RECAPTCHA_BYPASS=true pour tester sans limitation reCAPTCHA
-  if (process.env.RECAPTCHA_BYPASS === 'true') {
-    console.log('[reCAPTCHA] BYPASS activé - Validation contournée');
-    return { success: true, score: 0.9, action: 'submit_form' };
-  }
-
-  // 🔧 Accepter les tokens bypass localhost ou vides
-  if (token === 'bypass_token' || !token) {
-    console.log('[reCAPTCHA] Token bypass accepté');
-    return { success: true, score: 0.9, action: 'submit_form' };
-  }
-
   // 🔧 EN DÉVELOPPEMENT: bypass reCAPTCHA pour tester localement
   if (process.env.NODE_ENV === 'development') {
     console.log('[reCAPTCHA] Mode DÉVELOPPEMENT - Validation contournée');

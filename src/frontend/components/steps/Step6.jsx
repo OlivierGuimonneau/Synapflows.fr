@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 export default function Step6({ data, onChange, onPrev, onSubmit, loading }) {
   const [reCaptchaError, setReCaptchaError] = useState(null);
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -11,14 +13,17 @@ export default function Step6({ data, onChange, onPrev, onSubmit, loading }) {
   const handleSubmit = async () => {
     try {
       setReCaptchaError(null);
-      console.log('[Step6] Submission with bypass token');
-      // Bypass reCAPTCHA - passer un token vide (sera contourné côté backend)
-      onSubmit('bypass_token');
+
+      if (!executeRecaptcha) {
+        throw new Error('reCAPTCHA non initialisé, veuillez patienter et réessayer.');
+      }
+
+      const token = await executeRecaptcha('submit_lead');
+      onSubmit(token);
     } catch (error) {
       const errorMsg = error.message || 'Erreur inconnue';
       setReCaptchaError(errorMsg);
       console.error('[Step6] Exception:', error);
-      alert('Erreur: ' + errorMsg);
     }
   };
 
