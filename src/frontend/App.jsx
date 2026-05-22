@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import Header from './components/Header';
 import HomePage from './pages/HomePage';
 import QualificationPage from './pages/QualificationPage';
@@ -13,21 +12,19 @@ import './styles/index.css';
 
 export default function App() {
   return (
-    <GoogleReCaptchaProvider reCaptchaKey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}>
-      <Router>
-        <div>
-          <Header />
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/formulaire-qualification" element={<QualificationPage />} />
-            <Route path="/mentions-legales" element={<LegalPage />} />
-            <Route path="/conditions-generales" element={<TermsPage />} />
-            <Route path="/faq" element={<FAQPage />} />
-            <Route path="*" element={<Page404 />} />
-          </Routes>
-          <Footer />
-        </div>
-      </Router>
-    </GoogleReCaptchaProvider>
+    <Router>
+      <div>
+        <Header />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/formulaire-qualification" element={<QualificationPage />} />
+          <Route path="/mentions-legales" element={<LegalPage />} />
+          <Route path="/conditions-generales" element={<TermsPage />} />
+          <Route path="/faq" element={<FAQPage />} />
+          <Route path="*" element={<Page404 />} />
+        </Routes>
+        <Footer />
+      </div>
+    </Router>
   );
 }

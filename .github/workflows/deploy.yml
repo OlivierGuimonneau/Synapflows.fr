@@ -39,18 +39,6 @@ jobs:
           echo "🔐 Testing SSH connection..."
           ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "echo '✓ SSH connection successful'" || exit 1
           
-          # Create .env on VPS — printf évite les problèmes d'indentation YAML et de valeurs avec espaces
-          echo "📝 Creating .env on VPS..."
-          printf 'PORT=5000\nNODE_ENV=production\nAIRTABLE_BASE_ID=%s\nAIRTABLE_PROJETS_SOUMIS=%s\nAIRTABLE_TOKEN=%s\nVITE_RECAPTCHA_SITE_KEY=%s\nVITE_RECAPTCHA_ACTION=submit_lead\nRECAPTCHA_SITE_KEY=%s\nRECAPTCHA_ENTERPRISE_API_KEY=%s\nRECAPTCHA_ENTERPRISE_PROJECT_ID=synapflows\nRECAPTCHA_EXPECTED_ACTION=submit_lead\nRECAPTCHA_MIN_SCORE=0.5\n' \
-            "$AIRTABLE_BASE_ID" \
-            "$AIRTABLE_PROJETS_SOUMIS" \
-            "$AIRTABLE_TOKEN" \
-            "$RECAPTCHA_SITE_KEY" \
-            "$RECAPTCHA_SITE_KEY" \
-            "$RECAPTCHA_ENTERPRISE_API_KEY" | \
-          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} \
-            "cat > ${{ secrets.VPS_PATH }}/.env && chmod 600 ${{ secrets.VPS_PATH }}/.env"
-          
           # Deploy script
           echo "🚀 Starting deployment..."
           ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} bash -s ${{ secrets.VPS_PATH }} << 'DEPLOY_SCRIPT'

@@ -1,13 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function Step2({ data, onChange, onNext, onPrev }) {
+  const [objectifOptions, setObjectifOptions] = useState([]);
+
+  useEffect(() => {
+    fetch('/api/options')
+      .then(r => r.json())
+      .then(opts => setObjectifOptions(opts.objectif ?? []))
+      .catch(() => setObjectifOptions([
+        'Créer un nouvel outil métier',
+        'Automatiser un processus',
+        'Moderniser un existant',
+        'Améliorer l\'expérience utilisateur',
+        'Générer des leads',
+      ]));
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     onChange({ [name]: value });
   };
 
   const handleContinue = () => {
-    if (!data.type_projet || !data.description) {
+    if (!data.type_projet || !data.description || !data.objectif) {
       alert('Veuillez compléter les champs obligatoires');
       return;
     }
@@ -61,14 +76,10 @@ export default function Step2({ data, onChange, onNext, onPrev }) {
       </div>
 
       <div className="field">
-        <label>Objectif principal</label>
+        <label>Objectif principal <span className="req">*</span></label>
         <select name="objectif" value={data.objectif || ''} onChange={handleChange}>
           <option value="">— Sélectionner —</option>
-          <option>Générer des leads</option>
-          <option>Automatiser un processus</option>
-          <option>Créer un nouvel outil métier</option>
-          <option>Améliorer l'expérience client</option>
-          <option>Moderniser un existant</option>
+          {objectifOptions.map(opt => <option key={opt}>{opt}</option>)}
         </select>
       </div>
 

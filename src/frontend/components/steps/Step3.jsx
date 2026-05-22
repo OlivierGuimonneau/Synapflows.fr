@@ -31,6 +31,14 @@ export default function Step3({ data, onChange, onNext, onPrev }) {
 
   const fonctionsArray = Array.isArray(data.fonctions) ? data.fonctions : [];
 
+  const handleContinue = () => {
+    if (fonctionsArray.length === 0) {
+      alert('Veuillez sélectionner au moins une fonction métier');
+      return;
+    }
+    onNext();
+  };
+
   return (
     <section className="card active">
       <div className="step-tag">Étape 3 · Fonctionnalités</div>
@@ -39,7 +47,7 @@ export default function Step3({ data, onChange, onNext, onPrev }) {
       <div className="divider"></div>
 
       <div className="field">
-        <div className="group-title">Fonctions métier</div>
+        <div className="group-title">Fonctions métier <span className="req">*</span></div>
         <div className="choice-grid">
           {features.map(feature => (
             <label key={feature.value} className={`choice ${fonctionsArray.includes(feature.value) ? 'selected' : ''}`}>
@@ -70,7 +78,7 @@ export default function Step3({ data, onChange, onNext, onPrev }) {
 
       <div className="nav">
         <button type="button" className="btn btn-ghost" onClick={onPrev}>Retour</button>
-        <button type="button" className="btn btn-primary" onClick={onNext}>Continuer</button>
+        <button type="button" className="btn btn-primary" onClick={handleContinue}>Continuer</button>
       </div>
     </section>
   );

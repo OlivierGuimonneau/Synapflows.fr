@@ -7,7 +7,7 @@ export default function Step1({ data, onChange, onNext }) {
   };
 
   const handleContinue = () => {
-    if (!data.prenom || !data.nom || !data.email || !data.societe) {
+    if (!data.prenom || !data.nom || !data.email || !data.societe || !data.tel || !data.nom_projet) {
       alert('Veuillez compléter les champs obligatoires');
       return;
     }
@@ -57,13 +57,14 @@ export default function Step1({ data, onChange, onNext }) {
 
       <div className="field-grid">
         <div className="field">
-          <label>Téléphone</label>
+          <label>Téléphone <span className="req">*</span></label>
           <input
             type="tel"
             name="tel"
             placeholder="+33 6 12 34 56 78"
             value={data.tel || ''}
             onChange={handleChange}
+            required
           />
         </div>
         <div className="field">
@@ -85,6 +86,17 @@ export default function Step1({ data, onChange, onNext }) {
           name="societe"
           placeholder="Nom de votre structure"
           value={data.societe || ''}
+          onChange={handleChange}
+        />
+      </div>
+
+      <div className="field">
+        <label>Nom du projet <span className="req">*</span></label>
+        <input
+          type="text"
+          name="nom_projet"
+          placeholder="Ex : Portail client, Outil de suivi commandes..."
+          value={data.nom_projet || ''}
           onChange={handleChange}
         />
       </div>

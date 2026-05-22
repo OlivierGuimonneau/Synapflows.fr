@@ -9,24 +9,27 @@ function mapToAirtableFields(payload) {
   const time = dateObj.toLocaleString('fr-FR', { hour: '2-digit', minute: '2-digit', hour12: false });
   const dateWithTime = `${dateOnly} ${time}`; // "2026-04-07 16:37"
 
-  return {
+  const toArray = (val) => Array.isArray(val) ? val : (val ? [val] : []);
+
+  const raw = {
     'Prénom': payload.prenom || '',
     'Nom': payload.nom || '',
     'Email': payload.email || '',
     'Téléphone': payload.tel || '',
     'Fonction': payload.fonction || '',
     'Entreprise': payload.societe || '',
+    'Nom du projet': payload.nom_projet || '',
     'Type de projet': payload.type_projet || '',
     'Description du projet': payload.description || '',
     'Objectif principal': payload.objectif || '',
-    'Fonctionnalités': Array.isArray(payload.fonctions) ? payload.fonctions.join(', ') : payload.fonctions || '',
+    'Fonctionnalités': toArray(payload.fonctions),
     'Priorités V1': payload.priorites || '',
     'Utilisateurs lancement': payload.users_launch || '',
     'Utilisateurs à 1 an': payload.users_year1 || '',
-    'Profils utilisateurs': Array.isArray(payload.profils) ? payload.profils.join(', ') : payload.profils || '',
+    'Profils utilisateurs': toArray(payload.profils),
     'Conformité et sécurité': payload.compliance || '',
     'Intégrations existantes': payload.integrations || '',
-    'Ambiance visuelle': Array.isArray(payload.ambiance) ? payload.ambiance.join(', ') : payload.ambiance || '',
+    'Ambiance visuelle': toArray(payload.ambiance),
     'Références design': payload.refs_design || '',
     'Contraintes de charte': payload.charte || '',
     'Budget': payload.budget || '',
@@ -35,6 +38,14 @@ function mapToAirtableFields(payload) {
     'Date de soumission': dateWithTime,
     'Source': 'Formulaire site SynapFlows'
   };
+
+  // Supprimer les champs vides (string vide ou tableau vide) pour éviter les erreurs de type Airtable
+  return Object.fromEntries(
+    Object.entries(raw).filter(([, v]) => {
+      if (Array.isArray(v)) return v.length > 0;
+      return v !== '' && v !== null && v !== undefined;
+    })
+  );
 }
 
 export async function submitToAirtable(payload) {

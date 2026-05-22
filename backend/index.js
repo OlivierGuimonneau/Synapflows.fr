@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import rateLimit from 'express-rate-limit';
 import submitRoute from './routes/submit.js';
+import optionsRoute from './routes/options.js';
 
 dotenv.config();
 
@@ -114,6 +115,7 @@ app.post('/api/csp-report', express.json({ type: 'application/csp-report' }), (r
 // 🚦 API Routes sécurisées avec rate limiting
 try {
   app.use('/api/submit', submitLimiter, submitRoute);
+  app.use('/api/options', optionsRoute);
   console.log('✅ Route /api/submit enregistrée avec succès');
 } catch (error) {
   console.error('❌ Erreur lors du chargement de la route /api/submit:', error);
