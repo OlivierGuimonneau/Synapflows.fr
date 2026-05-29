@@ -24,6 +24,10 @@ export default function SuccessScreen({ formData }) {
       </div>
       <h2>Demande envoyée</h2>
       <p>Votre projet nous est bien parvenu, une première réponse vous sera adressée au plus vite.</p>
+      <p style={{ fontSize: '0.95em', marginTop: '0.75rem' }}>
+        Pensez à vérifier vos <strong>courriers indésirables</strong> et à ajouter{' '}
+        <strong>synapflows@gmail.com</strong> à vos contacts pour ne rien manquer.
+      </p>
       <p style={{ fontSize: '0.95em', marginTop: '1rem', color: '#666' }}>L'équipe SynapFlows</p>
       
       <div className="summary">
